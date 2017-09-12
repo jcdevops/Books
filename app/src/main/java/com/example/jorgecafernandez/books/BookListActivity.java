@@ -65,6 +65,7 @@ public class BookListActivity extends AppCompatActivity implements SearchView.On
         return false;
     }
 
+    /** onQueryTextChange Method */
     @Override
     public boolean onQueryTextChange(String newText) {
         return false;
