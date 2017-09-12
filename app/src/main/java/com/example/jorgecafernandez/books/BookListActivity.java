@@ -3,6 +3,8 @@ package com.example.jorgecafernandez.books;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -12,24 +14,31 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
+/** BookListActivity class */
 public class BookListActivity extends AppCompatActivity {
-
     private ProgressBar mLoadingProgress;
+    private RecyclerView rvBooks;
+
+    /** onCreate Method */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_list);
         mLoadingProgress = (ProgressBar) findViewById(R.id.pb_loading);
-        try{
-            URL bookUrl = ApiUtil.buildUrl("cooking");
-            new BooksQueryTask().execute(bookUrl);
-
-        }
-        catch (Exception e){
-            Log.d("error", e.getMessage());
-        }
+            rvBooks = (RecyclerView) findViewById(R.id.rv_books);
+            LinearLayoutManager booksLayoutManager = new LinearLayoutManager(this,
+                    LinearLayoutManager.VERTICAL, false);
+        rvBooks.setLayoutManager(booksLayoutManager);
+            try{
+                URL bookUrl = ApiUtil.buildUrl("cooking");
+                new BooksQueryTask().execute(bookUrl);
+            }
+            catch (Exception e){
+                Log.d("error", e.getMessage());
+            }
     }
 
+    /** BooksQueryTask AsyncTask */
     public class BooksQueryTask extends AsyncTask<URL, Void, String>{
 
         @Override
@@ -46,24 +55,20 @@ public class BookListActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            TextView tvResult = (TextView) findViewById(R.id.tvResponse);
             TextView tvError = (TextView) findViewById(R.id.tv_error);
             mLoadingProgress.setVisibility(View.INVISIBLE);
             if(result == null){
-                tvResult.setVisibility(View.INVISIBLE);
+                rvBooks.setVisibility(View.INVISIBLE);
                 tvError.setVisibility(View.VISIBLE);
             }
             else{
-                tvResult.setVisibility(View.VISIBLE);
+                rvBooks.setVisibility(View.VISIBLE);
                 tvError.setVisibility(View.INVISIBLE);
             }
             ArrayList<Book> books = ApiUtil.getBooksFromJson(result);
             String resultString = "";
-                for(Book book : books){
-                    resultString = resultString + book.title + "\n" +
-                            book.PublishedDate + "\n\n";
-                }
-                tvResult.setText(resultString);
+                BooksAdapter adapter = new BooksAdapter(books);
+            rvBooks.setAdapter(adapter);
         }
 
         @Override
