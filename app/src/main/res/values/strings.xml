@@ -6,4 +6,5 @@
     <string name="hint_author">Insert Author(s)</string>
     <string name="hint_publisher">Insert Publisher</string>
     <string name="hint_ISBN">Insert ISBN</string>
+    <string name="advanced_search">Advanced Search</string>
 </resources>
