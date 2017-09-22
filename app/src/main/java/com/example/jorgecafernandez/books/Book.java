@@ -4,6 +4,7 @@ import android.databinding.BindingAdapter;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
@@ -82,9 +83,14 @@ public class Book implements Parcelable {
     /** Method loadImage from Book Class */
     @BindingAdapter({"android:imageUrl"})
     public static void loadImage(ImageView view, String imageUrl){
-        Picasso.with(view.getContext())
-                .load(imageUrl)
-                .placeholder(R.drawable.book_open)
-                .into(view);
+        if(!imageUrl.isEmpty()) {
+            Picasso.with(view.getContext())
+                    .load(imageUrl)
+                    .placeholder(R.drawable.book_open)
+                    .into(view);
+        }
+        else{
+            view.setBackgroundResource(R.drawable.book_open);
+        }
     }
 }
